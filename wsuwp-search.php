@@ -43,13 +43,14 @@ class WSU_Search {
 			return NULL;
 		}
 
-		$search_id = get_post_meta( $post_id, '_wsusearch_doc_id', true );
-
 		// HTTP request arguments.
 		$args = array();
 		// Data to be sent as JSON to Elasticsearch.
 		$data = array();
 
+		$search_id = get_post_meta( $post_id, '_wsusearch_doc_id', true );
+
+		// If this document already has an ID, we'll PUT to update it. If not, we'll POST a new document.
 		if ( $search_id ) {
 			$args['method'] = 'PUT';
 			$this->index_api_url .= sanitize_key( $search_id );
@@ -60,9 +61,14 @@ class WSU_Search {
 		$data['title'] = $post->post_title;
 		$data['date'] = $post->post_date;
 		$data['content'] = $post->post_content;
-		$data['site_id'] = get_current_blog_id();
-		$data['network_id'] = wsuwp_get_current_network()->id;
 		$data['url'] = get_permalink( $post_id );
+
+		// Information about the site and network this came from.
+		$data['site_id'] = get_current_blog_id();
+
+		if ( function_exists( 'wsuwp_get_current_network' ) ) {
+			$data['network_id'] = wsuwp_get_current_network()->id;
+		}
 
 		$args['body'] = json_encode( $data );
 
