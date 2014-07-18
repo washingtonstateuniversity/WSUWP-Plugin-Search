@@ -82,6 +82,26 @@ class WSU_Search {
 			$data['network_id'] = wsuwp_get_current_network()->id;
 		}
 
+		// Map each registered public taxonomy to the Elasticsearch document.
+		$taxonomies = get_taxonomies( array( 'public' => true ) );
+
+		foreach ( $taxonomies as $taxonomy ) {
+			$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+			if ( ! is_wp_error( $post_terms ) ) {
+				if ( 'post_tag' === $taxonomy ) {
+					$data['university_tag'] = $post_terms;
+				} elseif( 'wsuwp_university_category' === $taxonomy ) {
+					$data['university_category'] = $post_terms;
+				} elseif( 'wsuwp_university_location' === $taxonomy ) {
+					$data['university_location'] = $post_terms;
+				} elseif( 'category' === $taxonomy ) {
+					$data['site_category'] = $post_terms;
+				} else {
+					$data[ $taxonomy ] = $post_terms;
+				}
+			}
+		}
+
 		$args['body'] = json_encode( $data );
 
 		$response = wp_remote_post( $this->index_api_url, $args );
