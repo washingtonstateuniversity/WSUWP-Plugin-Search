@@ -65,6 +65,7 @@ class WSU_Search {
 
 		$data['title'] = $post->post_title;
 		$data['date'] = $post->post_date;
+		$data['modified'] = $post->post_modified;
 		$data['content'] = $post->post_content;
 		$data['url'] = get_permalink( $post_id );
 
