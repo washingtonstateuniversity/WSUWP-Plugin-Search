@@ -34,8 +34,9 @@ class WSU_Search {
 	 * When a post is saved, ensure that the most recent version is updated in the index. If this
 	 * does not yet exist in the index, then create the document and log the generated UUID.
 	 *
-	 * @param int     $post_id The ID of the post being saved.
-	 * @param WP_Post $post    The entire post object.
+	 * @param string  $new_status Post status being saved.
+	 * @param string  $old_status Previous post status.
+	 * @param WP_Post $post       The entire post object.
 	 *
 	 * @return null
 	 */
