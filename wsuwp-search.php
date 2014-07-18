@@ -58,7 +58,7 @@ class WSU_Search {
 		// If this document already has an ID, we'll PUT to update it. If not, we'll POST a new document.
 		if ( $search_id ) {
 			$args['method'] = 'PUT';
-			$this->index_api_url .= sanitize_key( $search_id );
+			$this->index_api_url .= $this->_sanitize_es_id( $search_id );
 		} else {
 			$args['method'] = 'POST';
 		}
@@ -87,8 +87,19 @@ class WSU_Search {
 
 		if ( ! empty( $response ) ) {
 			$response_data = json_decode( $response );
-			update_post_meta( $post_id, '_wsusearch_doc_id', sanitize_key( $response_data->_id ) );
+			update_post_meta( $post_id, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
 		}
+	}
+
+	/**
+	 * Sanitize the key returned from Elasticsearch. It should be a-z, A-Z, -, and _ only.
+	 *
+	 * @param string $id UUID returned from ES, or currently in use for a page.
+	 *
+	 * @return string sanitized string.
+	 */
+	private function _sanitize_es_id( $id ) {
+		return preg_replace( '/[^a-zA-Z0-9_\-]/', '', $id );
 	}
 }
 new WSU_Search();
