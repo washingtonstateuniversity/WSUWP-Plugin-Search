@@ -27,7 +27,7 @@ class WSU_Search {
 			$this->index_api_url = 'http://134.121.140.161:9200/wsu-local-dev/page/';
 		}
 
-		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
+		add_action( 'transition_post_status', array( $this, 'save_post' ), 10, 3 );
 	}
 
 	/**
@@ -39,12 +39,12 @@ class WSU_Search {
 	 *
 	 * @return null
 	 */
-	public function save_post( $post_id, $post ) {
+	public function save_post( $new_status, $old_status, $post ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return NULL;
 		}
 
-		if ( in_array( $post->post_status, array( 'inherit', 'auto-draft', 'pending', 'draft', 'future', 'private', 'trash' ) ) ) {
+		if ( 'publish' !== $new_status ) {
 			return NULL;
 		}
 
@@ -53,7 +53,7 @@ class WSU_Search {
 		// Data to be sent as JSON to Elasticsearch.
 		$data = array();
 
-		$search_id = get_post_meta( $post_id, '_wsusearch_doc_id', true );
+		$search_id = get_post_meta( $post->ID, '_wsusearch_doc_id', true );
 
 		// If this document already has an ID, we'll PUT to update it. If not, we'll POST a new document.
 		if ( $search_id ) {
@@ -67,16 +67,21 @@ class WSU_Search {
 		$data['date'] = $post->post_date;
 		$data['modified'] = $post->post_modified;
 		$data['content'] = $post->post_content;
-		$data['url'] = get_permalink( $post_id );
+		$data['url'] = get_permalink( $post->ID );
 		$data['post_type'] = $post->post_type;
 
 		// Information about the site and network this came from.
 		$data['site_id'] = get_current_blog_id();
 
 		// Store the hostname - e.g. home.wsu.edu - as a field.
-		$home_url = parse_url( get_home_url() );
+		$home_url = parse_url( trailingslashit( get_home_url() ) );
 		$data['hostname'] = $home_url['host'];
-		$data['site_url'] = $home_url['host'] . $home_url['path'];
+		$data['site_url'] = $home_url['host'];
+
+		// Only attach path if it isn't empty.
+		if ( '/' !== $home_url['path'] ) {
+			$data['site_url'] .= $home_url['path'];
+		}
 
 		if ( function_exists( 'wsuwp_get_current_network' ) ) {
 			$data['network_id'] = wsuwp_get_current_network()->id;
@@ -86,7 +91,7 @@ class WSU_Search {
 		$taxonomies = get_taxonomies( array( 'public' => true ) );
 
 		foreach ( $taxonomies as $taxonomy ) {
-			$post_terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'slugs' ) );
+			$post_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'slugs' ) );
 			if ( ! is_wp_error( $post_terms ) ) {
 				if ( 'post_tag' === $taxonomy ) {
 					$data['university_tag'] = $post_terms;
@@ -109,7 +114,7 @@ class WSU_Search {
 
 		if ( ! empty( $response ) ) {
 			$response_data = json_decode( $response );
-			update_post_meta( $post_id, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
+			update_post_meta( $post->ID, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
 		}
 	}
 
