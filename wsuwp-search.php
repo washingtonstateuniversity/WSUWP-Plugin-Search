@@ -22,6 +22,11 @@ class WSU_Search {
 	 * Setup hooks.
 	 */
 	public function __construct() {
+		// Use a different index for pages saved during local development.
+		if ( defined( 'WSU_LOCAL_CONFIG' ) && true === WSU_LOCAL_CONFIG ) {
+			$this->index_api_url = 'http://134.121.140.161:9200/wsu-local-dev/page/';
+		}
+
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 	}
 
