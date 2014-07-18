@@ -71,6 +71,10 @@ class WSU_Search {
 		// Information about the site and network this came from.
 		$data['site_id'] = get_current_blog_id();
 
+		// Store the hostname - e.g. home.wsu.edu - as a field.
+		$home_url = parse_url( get_home_url() );
+		$data['hostname'] = $home_url['host'];
+
 		if ( function_exists( 'wsuwp_get_current_network' ) ) {
 			$data['network_id'] = wsuwp_get_current_network()->id;
 		}
