@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WSU Search
-Version: 0.0.1
+Version: 0.2.0
 Plugin URI: http://web.wsu.edu
 Description: Connects to Search
 Author: washingtonstateuniversity, jeremyfelt
