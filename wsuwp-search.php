@@ -74,6 +74,7 @@ class WSU_Search {
 		// Store the hostname - e.g. home.wsu.edu - as a field.
 		$home_url = parse_url( get_home_url() );
 		$data['hostname'] = $home_url['host'];
+		$data['site_url'] = $home_url['host'] . $home_url['path'];
 
 		if ( function_exists( 'wsuwp_get_current_network' ) ) {
 			$data['network_id'] = wsuwp_get_current_network()->id;
