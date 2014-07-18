@@ -44,7 +44,7 @@ class WSU_Search {
 			return NULL;
 		}
 
-		if ( in_array( $post->post_status, array( 'inherit', 'auto-draft' ) ) ) {
+		if ( in_array( $post->post_status, array( 'inherit', 'auto-draft', 'pending', 'draft', 'future', 'private', 'trash' ) ) ) {
 			return NULL;
 		}
 
