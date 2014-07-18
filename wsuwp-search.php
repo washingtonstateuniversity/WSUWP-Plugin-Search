@@ -28,6 +28,7 @@ class WSU_Search {
 		}
 
 		add_action( 'transition_post_status', array( $this, 'save_post' ), 10, 3 );
+		add_action( 'transition_post_status', array( $this, 'delete_post' ), 10, 3 );
 	}
 
 	/**
@@ -116,6 +117,43 @@ class WSU_Search {
 		if ( ! empty( $response ) ) {
 			$response_data = json_decode( $response );
 			update_post_meta( $post->ID, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
+		}
+	}
+
+	/**
+	 * When a post is saved, delete it from the index if the end post status is something other
+	 * than 'publish'.
+	 *
+	 * @param string  $new_status Post status being saved.
+	 * @param string  $old_status Previous post status.
+	 * @param WP_Post $post       The entire post object.
+	 *
+	 * @return null
+	 */
+	public function delete_post( $new_status, $old_status, $post ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return NULL;
+		}
+
+		// This document should be saving to a post status other than publish from a post status of publish.
+		if ( 'publish' === $new_status || 'publish' !== $old_status ) {
+			return NULL;
+		}
+
+		$search_id = get_post_meta( $post->ID, '_wsusearch_doc_id', true );
+
+		// This document has not yet been saved, no need to delete.
+		if ( false === $search_id ) {
+			return NULL;
+		}
+
+		$this->index_api_url .= $this->_sanitize_es_id( $search_id );
+
+		// Make a request to delete the existing document from Elasticsearch.
+		$response = wp_remote_request( $this->index_api_url, array( 'method' => 'DELETE' ) );
+
+		if ( ! is_wp_error( $response ) ) {
+			delete_post_meta( $post->ID, '_wsusearch_doc_id' );
 		}
 	}
 
