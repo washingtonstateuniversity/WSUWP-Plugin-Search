@@ -20,7 +20,7 @@ The current document structure for pages saved by the WSU Search plugin is:
 		"site_id":             52,
 		"hostname":            "news.wsu.dev",
 		"site_url":            "news.wsu.dev",
-		"network_id":          "8",
+		"network_id":          8,
 		"site_category":       [ "uncategorized" ],
 		"university_tag":      ["tag"],
 		"post_format":         [],

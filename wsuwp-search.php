@@ -86,7 +86,7 @@ class WSU_Search {
 		}
 
 		if ( function_exists( 'wsuwp_get_current_network' ) ) {
-			$data['network_id'] = wsuwp_get_current_network()->id;
+			$data['network_id'] = intval( wsuwp_get_current_network()->id );
 		}
 
 		// Map each registered public taxonomy to the Elasticsearch document.
