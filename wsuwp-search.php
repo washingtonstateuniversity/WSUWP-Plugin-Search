@@ -28,7 +28,7 @@ class WSU_Search {
 		}
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
-		add_action( 'before_delete_post', array( $this, 'delete_post' ), 10, 1 );
+		add_action( 'before_delete_post', array( $this, 'remove_post_from_index' ), 10, 1 );
 	}
 
 	/**
@@ -45,7 +45,12 @@ class WSU_Search {
 			return NULL;
 		}
 
+		if ( 'auto-draft' === $post->post_status || 'revision' === $post->post_type ) {
+			return NULL;
+		}
+
 		if ( 'publish' !== $post->post_status ) {
+			$this->remove_post_from_index( $post_id );
 			return NULL;
 		}
 
@@ -127,7 +132,7 @@ class WSU_Search {
 	 *
 	 * @return null
 	 */
-	public function delete_post( $post_id ) {
+	public function remove_post_from_index( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return NULL;
 		}
