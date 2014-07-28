@@ -27,7 +27,7 @@ class WSU_Search {
 			$this->index_api_url = 'http://134.121.140.161:9200/wsu-local-dev/page/';
 		}
 
-		add_action( 'transition_post_status', array( $this, 'save_post' ), 10, 3 );
+		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'transition_post_status', array( $this, 'delete_post' ), 10, 3 );
 	}
 
@@ -41,12 +41,12 @@ class WSU_Search {
 	 *
 	 * @return null
 	 */
-	public function save_post( $new_status, $old_status, $post ) {
+	public function save_post( $post_id, $post ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return NULL;
 		}
 
-		if ( 'publish' !== $new_status ) {
+		if ( 'publish' !== $post->post_status ) {
 			return NULL;
 		}
 
