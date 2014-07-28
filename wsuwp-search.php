@@ -28,18 +28,17 @@ class WSU_Search {
 		}
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
-		add_action( 'transition_post_status', array( $this, 'delete_post' ), 10, 3 );
+		add_action( 'before_delete_post', array( $this, 'delete_post' ), 10, 1 );
 	}
 
 	/**
 	 * When a post is saved, ensure that the most recent version is updated in the index. If this
 	 * does not yet exist in the index, then create the document and log the generated UUID.
 	 *
-	 * @param string  $new_status Post status being saved.
-	 * @param string  $old_status Previous post status.
-	 * @param WP_Post $post       The entire post object.
+	 * @param int     $post_id ID of the post being saved.
+	 * @param WP_Post $post    The entire post object.
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function save_post( $post_id, $post ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -122,29 +121,21 @@ class WSU_Search {
 	}
 
 	/**
-	 * When a post is saved, delete it from the index if the end post status is something other
-	 * than 'publish'.
+	 * When a post is deleted, delete it from Elasticsearch as well.
 	 *
-	 * @param string  $new_status Post status being saved.
-	 * @param string  $old_status Previous post status.
-	 * @param WP_Post $post       The entire post object.
+	 * @param int $post_id ID of the post being deleted.
 	 *
 	 * @return null
 	 */
-	public function delete_post( $new_status, $old_status, $post ) {
+	public function delete_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return NULL;
 		}
 
-		// This document should be saving to a post status other than publish from a post status of publish.
-		if ( 'publish' === $new_status || 'publish' !== $old_status ) {
-			return NULL;
-		}
-
-		$search_id = get_post_meta( $post->ID, '_wsusearch_doc_id', true );
+		$search_id = get_post_meta( $post_id, '_wsusearch_doc_id', true );
 
 		// This document has not yet been saved, no need to delete.
-		if ( false === $search_id ) {
+		if ( empty( $search_id ) ) {
 			return NULL;
 		}
 
@@ -154,7 +145,7 @@ class WSU_Search {
 		$response = wp_remote_request( $request_url, array( 'method' => 'DELETE' ) );
 
 		if ( ! is_wp_error( $response ) ) {
-			delete_post_meta( $post->ID, '_wsusearch_doc_id' );
+			delete_post_meta( $post_id, '_wsusearch_doc_id' );
 		}
 	}
 
