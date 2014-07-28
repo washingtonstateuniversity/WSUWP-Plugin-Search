@@ -45,7 +45,7 @@ class WSU_Search {
 			return NULL;
 		}
 
-		if ( 'auto-draft' === $post->post_status || 'revision' === $post->post_type ) {
+		if ( ! in_array( $post->post_type, array( 'post', 'page' ) ) ) {
 			return NULL;
 		}
 
