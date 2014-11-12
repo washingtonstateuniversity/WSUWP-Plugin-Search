@@ -15,6 +15,7 @@ The current document structure for pages saved by the WSU Search plugin is:
 	"body" : {
 		"title":               "Title of the page or post",
 		"date":                "2014-07-18 21:38:27",
+		"author":              "Jeremy Felt",
 		"content":             "Content of the page or post",
 		"url":                 "http:\/\/wp.wsu.edu\/2014\/07\/18\/another-test-post\/",
 		"generator":           "wsuwp",
