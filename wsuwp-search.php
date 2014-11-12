@@ -49,8 +49,9 @@ class WSU_Search {
 			return NULL;
 		}
 
-		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites.
-		if ( 2 == get_option( 'blog_public' ) ) {
+		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
+		// site is set to 0. We should only index if this is set to 1.
+		if ( 1 !== get_option( 'blog_public' ) ) {
 			return NULL;
 		}
 
