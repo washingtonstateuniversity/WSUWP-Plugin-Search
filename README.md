@@ -23,7 +23,6 @@ The current document structure for pages saved by the WSU Search plugin is:
 		"network_id":          8,
 		"site_category":       [ "uncategorized" ],
 		"university_tag":      ["tag"],
-		"post_format":         [],
 		"university_category": [ "academic-subjects" ],
 		"university_location": [ "wsu-extension" ]
 	}

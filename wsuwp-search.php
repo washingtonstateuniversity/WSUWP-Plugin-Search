@@ -103,6 +103,11 @@ class WSU_Search {
 		// Map each registered public taxonomy to the Elasticsearch document.
 		$taxonomies = get_taxonomies( array( 'public' => true ) );
 
+		// Don't index post format.
+		if ( isset( $taxonomies['post_format'] ) ) {
+			unset( $taxonomies['post_format'] );
+		}
+
 		foreach ( $taxonomies as $taxonomy ) {
 			$post_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'slugs' ) );
 			if ( ! is_wp_error( $post_terms ) ) {
