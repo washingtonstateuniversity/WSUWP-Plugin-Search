@@ -49,6 +49,12 @@ class WSU_Search {
 			return NULL;
 		}
 
+		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
+		// site is set to 0. We should only index if this is set to 1.
+		if ( 1 !== get_option( 'blog_public' ) ) {
+			return NULL;
+		}
+
 		if ( 'publish' !== $post->post_status ) {
 			$this->remove_post_from_index( $post_id );
 			return NULL;
