@@ -17,6 +17,7 @@ The current document structure for pages saved by the WSU Search plugin is:
 		"date":                "2014-07-18 21:38:27",
 		"content":             "Content of the page or post",
 		"url":                 "http:\/\/wp.wsu.edu\/2014\/07\/18\/another-test-post\/",
+		"generator":           "wsuwp",
 		"site_id":             52,
 		"hostname":            "news.wsu.dev",
 		"site_url":            "news.wsu.dev",

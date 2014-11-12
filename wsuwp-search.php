@@ -81,6 +81,7 @@ class WSU_Search {
 		$data['modified'] = $post->post_modified;
 		$data['content'] = $post->post_content;
 		$data['url'] = get_permalink( $post->ID );
+		$data['generator'] = apply_filters( 'wsusearch_schema_generator', 'wsuwp' );
 		$data['post_type'] = $post->post_type;
 
 		// Information about the site and network this came from.
