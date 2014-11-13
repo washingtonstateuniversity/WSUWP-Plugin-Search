@@ -51,7 +51,7 @@ class WSU_Search {
 
 		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
 		// site is set to 0. We should only index if this is set to 1.
-		if ( 1 !== get_option( 'blog_public' ) ) {
+		if ( 1 != get_option( 'blog_public' ) ) {
 			return NULL;
 		}
 
@@ -79,8 +79,10 @@ class WSU_Search {
 		$data['title'] = $post->post_title;
 		$data['date'] = $post->post_date;
 		$data['modified'] = $post->post_modified;
+		$data['author'] = get_the_author();
 		$data['content'] = $post->post_content;
 		$data['url'] = get_permalink( $post->ID );
+		$data['generator'] = apply_filters( 'wsusearch_schema_generator', 'wsuwp' );
 		$data['post_type'] = $post->post_type;
 
 		// Information about the site and network this came from.
@@ -102,6 +104,11 @@ class WSU_Search {
 
 		// Map each registered public taxonomy to the Elasticsearch document.
 		$taxonomies = get_taxonomies( array( 'public' => true ) );
+
+		// Don't index post format.
+		if ( isset( $taxonomies['post_format'] ) ) {
+			unset( $taxonomies['post_format'] );
+		}
 
 		foreach ( $taxonomies as $taxonomy ) {
 			$post_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'slugs' ) );
