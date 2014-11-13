@@ -129,12 +129,15 @@ class WSU_Search {
 
 		$args['body'] = json_encode( $data );
 
+		// wp_remote_retrieve_body handles a possible WP_Error from wp_remote_post.
 		$response = wp_remote_post( $request_url, $args );
 		$response = wp_remote_retrieve_body( $response );
 
 		if ( ! empty( $response ) ) {
 			$response_data = json_decode( $response );
-			update_post_meta( $post->ID, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
+			if ( isset( $response_data->_id ) ) {
+				update_post_meta( $post->ID, '_wsusearch_doc_id', $this->_sanitize_es_id( $response_data->_id ) );
+			}
 		}
 	}
 
