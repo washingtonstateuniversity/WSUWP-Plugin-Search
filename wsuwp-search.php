@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WSU Search
-Version: 0.5.0
-Plugin URI: http://web.wsu.edu
+Version: 0.5.1
+Plugin URI: https://web.wsu.edu
 Description: Connects to Search
 Author: washingtonstateuniversity, jeremyfelt
-Author URI: http://web.wsu.edu
+Author URI: https://web.wsu.edu
 */
 
 /**
