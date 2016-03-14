@@ -49,10 +49,14 @@ class WSUWP_Search {
 	 */
 	public function get_index_url() {
 		$public_status = absint( get_option( 'blog_public', 0 ) );
+		$index_status = absint( get_option( 'index_private_site', 0 ) );
 
-		if ( 1 !== $public_status ) {
+		if ( 1 !== $public_status && 1 === $index_status ) {
 			$home_url = get_option( 'home' );
 			$index_slug = '/' . md5( $home_url );
+		} elseif ( 1 !== $public_status && 1 !== $index_status ) {
+			// Private sites must explicitly support search at this time.
+			return false;
 		} else {
 			$index_slug = '/wsu-web';
 		}
