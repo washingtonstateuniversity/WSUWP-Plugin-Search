@@ -141,7 +141,7 @@ class WSUWP_Search {
 			}
 		}
 
-		$args['body'] = json_encode( $data );
+		$args['body'] = wp_json_encode( $data );
 
 		// wp_remote_retrieve_body handles a possible WP_Error from wp_remote_post.
 		$response = wp_remote_post( $request_url, $args );
