@@ -12,7 +12,7 @@ class WSUWP_Search {
 	/**
 	 * @var string The base URL used to add pages from WordPress to our index.
 	 */
-	var $index_api_url = 'https://elastic.wsu.edu/wsu-web/page/';
+	var $index_api_url = 'https://elastic.wsu.edu';
 
 	/**
 	 * Maintain and return the one instance. Initiate hooks when
@@ -36,13 +36,39 @@ class WSUWP_Search {
 	 * @since 0.6.0
 	 */
 	public function setup_hooks() {
-		// Use a different index for pages saved during local development.
-		if ( defined( 'WSU_LOCAL_CONFIG' ) && true === WSU_LOCAL_CONFIG ) {
-			$this->index_api_url = 'https://elastic.wsu.edu/wsu-local-dev/page/';
-		}
-
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'remove_post_from_index' ), 10, 1 );
+	}
+
+	/**
+	 * Determine what URL should be used to access the ES index.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @return string URL to the ES index.
+	 */
+	public function get_index_url() {
+		$public_status = absint( get_option( 'blog_public', 0 ) );
+		$index_status = absint( get_option( 'index_private_site', 0 ) );
+
+		if ( 1 !== $public_status && 1 === $index_status ) {
+			$home_url = get_option( 'home' );
+			$index_slug = '/' . md5( $home_url );
+		} elseif ( 1 !== $public_status && 1 !== $index_status ) {
+			// Private sites must explicitly support search at this time.
+			return false;
+		} else {
+			$index_slug = '/wsu-web';
+		}
+
+		// Append '-dev' to the index slug when a development environment has been flagged.
+		if ( apply_filters( 'wsuwp_search_development', false ) ) {
+			$index_slug .= '-dev';
+		}
+
+		$index_slug .= '/page/';
+
+		return $this->index_api_url . $index_slug;
 	}
 
 	/**
@@ -63,9 +89,7 @@ class WSUWP_Search {
 			return null;
 		}
 
-		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
-		// site is set to 0. We should only index if this is set to 1.
-		if ( 1 !== absint( get_option( 'blog_public' ) ) ) {
+		if ( ! $this->get_index_url() ) {
 			return null;
 		}
 
@@ -84,10 +108,10 @@ class WSUWP_Search {
 		// If this document already has an ID, we'll PUT to update it. If not, we'll POST a new document.
 		if ( $search_id ) {
 			$args['method'] = 'PUT';
-			$request_url = $this->index_api_url . $this->_sanitize_es_id( $search_id );
+			$request_url = $this->get_index_url() . $this->_sanitize_es_id( $search_id );
 		} else {
 			$args['method'] = 'POST';
-			$request_url = $this->index_api_url;
+			$request_url = $this->get_index_url();
 		}
 
 		$data['title'] = $post->post_title;
@@ -174,7 +198,7 @@ class WSUWP_Search {
 			return null;
 		}
 
-		$request_url = $this->index_api_url . $this->_sanitize_es_id( $search_id );
+		$request_url = $this->get_index_url() . $this->_sanitize_es_id( $search_id );
 
 		// Make a request to delete the existing document from Elasticsearch.
 		$response = wp_remote_request( $request_url, array( 'method' => 'DELETE' ) );
