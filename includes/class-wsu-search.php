@@ -89,9 +89,7 @@ class WSUWP_Search {
 			return null;
 		}
 
-		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
-		// site is set to 0. We should only index if this is set to 1.
-		if ( 1 !== absint( get_option( 'blog_public' ) ) ) {
+		if ( ! $this->get_index_url() ) {
 			return null;
 		}
 
