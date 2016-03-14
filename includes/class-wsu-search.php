@@ -36,11 +36,6 @@ class WSUWP_Search {
 	 * @since 0.6.0
 	 */
 	public function setup_hooks() {
-		// Use a different index for pages saved during local development.
-		if ( defined( 'WSU_LOCAL_CONFIG' ) && true === WSU_LOCAL_CONFIG ) {
-			$this->index_api_url = 'https://elastic.wsu.edu/wsu-local-dev/page/';
-		}
-
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'remove_post_from_index' ), 10, 1 );
 	}
