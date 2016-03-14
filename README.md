@@ -6,7 +6,7 @@ Provides a connection to [WSU Search](https://github.com/washingtonstateuniversi
 
 Currently adds posts to WSU's `wsu-web` index as the global type of `page`.
 
-If `WSU_LOCAL_CONFIG` is defined as part of your development environment, th index will change to `wsu-local-dev`.
+If `wsuwp_search_development` is filtered to `true`, `-dev` will be appended to index URLs.
 
 ## Document Structure
 
