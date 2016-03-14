@@ -56,22 +56,22 @@ class WSUWP_Search {
 	 */
 	public function save_post( $post_id, $post ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return NULL;
+			return null;
 		}
 
 		if ( ! in_array( $post->post_type, array( 'post', 'page' ) ) ) {
-			return NULL;
+			return null;
 		}
 
 		// The Restricted Site Access plugin sets `blog_public` to 2 for restricted sites. A "private"
 		// site is set to 0. We should only index if this is set to 1.
 		if ( 1 != get_option( 'blog_public' ) ) {
-			return NULL;
+			return null;
 		}
 
 		if ( 'publish' !== $post->post_status ) {
 			$this->remove_post_from_index( $post_id );
-			return NULL;
+			return null;
 		}
 
 		// HTTP request arguments.
@@ -164,14 +164,14 @@ class WSUWP_Search {
 	 */
 	public function remove_post_from_index( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return NULL;
+			return null;
 		}
 
 		$search_id = get_post_meta( $post_id, '_wsusearch_doc_id', true );
 
 		// This document has not yet been saved, no need to delete.
 		if ( empty( $search_id ) ) {
-			return NULL;
+			return null;
 		}
 
 		$request_url = $this->index_api_url . $this->_sanitize_es_id( $search_id );
