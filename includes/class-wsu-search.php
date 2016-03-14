@@ -129,11 +129,11 @@ class WSUWP_Search {
 			if ( ! is_wp_error( $post_terms ) ) {
 				if ( 'post_tag' === $taxonomy ) {
 					$data['university_tag'] = $post_terms;
-				} elseif( 'wsuwp_university_category' === $taxonomy ) {
+				} elseif ( 'wsuwp_university_category' === $taxonomy ) {
 					$data['university_category'] = $post_terms;
-				} elseif( 'wsuwp_university_location' === $taxonomy ) {
+				} elseif ( 'wsuwp_university_location' === $taxonomy ) {
 					$data['university_location'] = $post_terms;
-				} elseif( 'category' === $taxonomy ) {
+				} elseif ( 'category' === $taxonomy ) {
 					$data['site_category'] = $post_terms;
 				} else {
 					$data[ $taxonomy ] = $post_terms;
