@@ -12,7 +12,7 @@ class WSUWP_Search {
 	/**
 	 * @var string The base URL used to add pages from WordPress to our index.
 	 */
-	var $index_api_url = 'https://elastic.wsu.edu/wsu-web/page/';
+	var $index_api_url = 'https://elastic.wsu.edu';
 
 	/**
 	 * Maintain and return the one instance. Initiate hooks when
@@ -43,6 +43,20 @@ class WSUWP_Search {
 
 		add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		add_action( 'before_delete_post', array( $this, 'remove_post_from_index' ), 10, 1 );
+	}
+
+	public function get_index_url() {
+		if ( defined( 'WSU_LOCAL_CONFIG' ) && true === WSU_LOCAL_CONFIG ) {
+			$index_slug = '/wsu-local-dev/';
+		} else {
+			$index_slug = '/wsu-web/';
+		}
+
+		if ( 1 !== absint( get_option( 'blog_public' ) ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
