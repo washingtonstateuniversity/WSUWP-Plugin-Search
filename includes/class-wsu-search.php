@@ -106,10 +106,10 @@ class WSUWP_Search {
 		// If this document already has an ID, we'll PUT to update it. If not, we'll POST a new document.
 		if ( $search_id ) {
 			$args['method'] = 'PUT';
-			$request_url = $this->index_api_url . $this->_sanitize_es_id( $search_id );
+			$request_url = $this->get_index_url() . $this->_sanitize_es_id( $search_id );
 		} else {
 			$args['method'] = 'POST';
-			$request_url = $this->index_api_url;
+			$request_url = $this->get_index_url();
 		}
 
 		$data['title'] = $post->post_title;
@@ -196,7 +196,7 @@ class WSUWP_Search {
 			return null;
 		}
 
-		$request_url = $this->index_api_url . $this->_sanitize_es_id( $search_id );
+		$request_url = $this->get_index_url() . $this->_sanitize_es_id( $search_id );
 
 		// Make a request to delete the existing document from Elasticsearch.
 		$response = wp_remote_request( $request_url, array( 'method' => 'DELETE' ) );
