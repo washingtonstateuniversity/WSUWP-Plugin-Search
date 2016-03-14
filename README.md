@@ -4,9 +4,9 @@
 
 Provides a connection to [WSU Search](https://github.com/washingtonstateuniversity/wsu-search/) from WordPress sites at WSU.
 
-Currently adds posts to WSU's `wsu-web` index as the global type of `page`.
-
-If `wsuwp_search_development` is filtered to `true`, `-dev` will be appended to index URLs.
+* By default, posts and pages of public sites are indexed to the `wsu-web` index with a type of `page`.
+* Restricted sites must also have the `index_private_site` option set to `1` to index content.
+* If `wsuwp_search_development` is filtered to `true`, `-dev` will be appended to index URLs.
 
 ## Document Structure
 
