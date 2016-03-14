@@ -59,7 +59,7 @@ class WSUWP_Search {
 			return null;
 		}
 
-		if ( ! in_array( $post->post_type, array( 'post', 'page' ) ) ) {
+		if ( ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
 			return null;
 		}
 
