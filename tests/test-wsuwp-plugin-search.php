@@ -10,7 +10,7 @@ class WSUWP_Search_Tests extends WP_UnitTestCase {
 		$index_url = WSUWP_Search()->get_index_url();
 		remove_filter( 'wsuwp_search_development', '__return_true' );
 
-		$this->assertEquals( 'https://elastic.wsu.edu/wsu-web-dev/page/', WSUWP_Search()->get_index_url() );
+		$this->assertEquals( 'https://elastic.wsu.edu/wsu-web-dev/page/', $index_url );
 	}
 
 	public function test_wsuwp_search_get_index_url_restricted_site() {

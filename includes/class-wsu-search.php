@@ -45,18 +45,31 @@ class WSUWP_Search {
 		add_action( 'before_delete_post', array( $this, 'remove_post_from_index' ), 10, 1 );
 	}
 
+	/**
+	 * Determine what URL should be used to access the ES index.
+	 *
+	 * @since 0.6.0
+	 *
+	 * @return string URL to the ES index.
+	 */
 	public function get_index_url() {
-		if ( defined( 'WSU_LOCAL_CONFIG' ) && true === WSU_LOCAL_CONFIG ) {
-			$index_slug = '/wsu-local-dev/';
+		$public_status = absint( get_option( 'blog_public', 0 ) );
+
+		if ( 1 !== $public_status ) {
+			$home_url = get_option( 'home' );
+			$index_slug = '/' . md5( $home_url );
 		} else {
-			$index_slug = '/wsu-web/';
+			$index_slug = '/wsu-web';
 		}
 
-		if ( 1 !== absint( get_option( 'blog_public' ) ) ) {
-			return false;
+		// Append '-dev' to the index slug when a development environment has been flagged.
+		if ( apply_filters( 'wsuwp_search_development', false ) ) {
+			$index_slug .= '-dev';
 		}
 
-		return true;
+		$index_slug .= '/page/';
+
+		return $this->index_api_url . $index_slug;
 	}
 
 	/**
