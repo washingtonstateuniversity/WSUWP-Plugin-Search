@@ -136,8 +136,8 @@ class WSUWP_Search {
 			$data['site_url'] .= $home_url['path'];
 		}
 
-		if ( function_exists( 'wsuwp_get_current_network' ) ) {
-			$data['network_id'] = intval( wsuwp_get_current_network()->id );
+		if ( is_multisite() ) {
+			$data['network_id'] = get_current_network_id();
 		}
 
 		// Map each registered public taxonomy to the Elasticsearch document.
