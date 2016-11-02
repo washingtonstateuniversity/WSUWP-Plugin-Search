@@ -51,6 +51,8 @@ class WSUWP_Search {
 		$public_status = absint( get_option( 'blog_public', 0 ) );
 		$index_status = absint( get_option( 'index_private_site', 0 ) );
 
+		$public_status = apply_filters( 'wsuwp_search_public_status', $public_status );
+
 		if ( 1 !== $public_status && 1 === $index_status ) {
 			$home_url = get_option( 'home' );
 			$index_slug = '/' . md5( $home_url );
