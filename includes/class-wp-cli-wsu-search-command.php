@@ -17,7 +17,7 @@ class WSUES_Command extends WP_CLI_Command {
 	 *     wp reindex all
 	 *     wp reindex 5
 	 */
-	function reindex( $args ) {
+	public function reindex( $args ) {
 		list( $type ) = $args;
 
 		if ( 'all' === $type ) {
