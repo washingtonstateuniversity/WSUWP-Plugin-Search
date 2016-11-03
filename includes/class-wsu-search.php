@@ -74,8 +74,7 @@ class WSUWP_Search {
 	}
 
 	/**
-	 * When a post is saved, ensure that the most recent version is updated in the index. If this
-	 * does not yet exist in the index, then create the document and log the generated UUID.
+	 * When a post is saved, ensure that the most recent version is updated in the index.
 	 *
 	 * @param int     $post_id ID of the post being saved.
 	 * @param WP_Post $post    The entire post object.
@@ -87,6 +86,22 @@ class WSUWP_Search {
 			return null;
 		}
 
+		$this->update_indexed_post( $post_id, $post );
+	}
+
+	/**
+	 * Updates an indexed post with its most recent version. If the post does not yet exist in
+	 * the index, create the document and log the UUID. If the post is no longer published, delete
+	 * the document from the index.
+	 *
+	 * @since 0.7.0
+	 *
+	 * @param int     $post_id ID of the post being indexed.
+	 * @param WP_Post $post    The entire post object.
+	 *
+	 * @return void
+	 */
+	public function update_indexed_post( $post_id, $post ) {
 		if ( ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
 			return null;
 		}
