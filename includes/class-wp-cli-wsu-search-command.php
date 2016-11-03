@@ -32,9 +32,9 @@ class WSUES_Command extends WP_CLI_Command {
 				WP_CLI::success( 'Reindex complete: ' . $post->ID . ' ' . $post->post_title );
 			}
 
-			WP_CLI::success( "reindex all" );
+			WP_CLI::success( 'Reindexed all.' );
 		} else if ( 0 === absint( $type ) ) {
-			WP_CLI::error( "Please provide an object ID. $type" );
+			WP_CLI::error( 'Please provide an object ID.' );
 		} else {
 			$wsuwp_search = WSUWP_Search::get_instance();
 			$post = get_post( $type );
@@ -42,10 +42,10 @@ class WSUES_Command extends WP_CLI_Command {
 			if ( $post ) {
 				$wsuwp_search->update_indexed_post( $type, $post );
 			} else {
-				WP_CLI::error( "Not a valid post object." );
+				WP_CLI::error( 'Not a valid post object.' );
 			}
 
-			WP_CLI::success( "reindexed a single object" );
+			WP_CLI::success( 'Reindex complete: ' . $type . ' ' . $post->post_title );
 		}
 	}
 }
