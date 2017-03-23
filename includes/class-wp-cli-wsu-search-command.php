@@ -23,7 +23,10 @@ class WSUES_Command extends WP_CLI_Command {
 		if ( 'all' === $type ) {
 			$wsuwp_search = WSUWP_Search::get_instance();
 
-			$response = WP_CLI::launch_self( 'post list --post_type=page,post', array(), array( 'format' => 'json' ), false, true );
+			$response = WP_CLI::launch_self( 'post list --post_type=page,post', array(), array(
+				'format' => 'json',
+			), false, true );
+
 			$posts = json_decode( $response->stdout );
 
 			foreach ( $posts as $post ) {
@@ -33,7 +36,7 @@ class WSUES_Command extends WP_CLI_Command {
 			}
 
 			WP_CLI::success( 'Reindexed all.' );
-		} else if ( 0 === absint( $type ) ) {
+		} elseif ( 0 === absint( $type ) ) {
 			WP_CLI::error( 'Please provide an object ID.' );
 		} else {
 			$wsuwp_search = WSUWP_Search::get_instance();
