@@ -60,7 +60,7 @@ class WSUWP_Search {
 			// Private sites must explicitly support search at this time.
 			return false;
 		} else {
-			$index_slug = '/wsu-web';
+			$index_slug = '/' . apply_filters( 'wsuwp_search_index_slug', 'wsu-web' );
 		}
 
 		// Append '-dev' to the index slug when a development environment has been flagged.
