@@ -134,7 +134,7 @@ class WSUWP_Search {
 		$data['title'] = $post->post_title;
 		$data['date'] = $post->post_date;
 		$data['modified'] = $post->post_modified;
-		$data['author'] = get_the_author();
+		$data['author'] = get_the_author_meta( 'display_name', $post->post_author );
 		$data['content'] = $post->post_content;
 		$data['url'] = get_permalink( $post->ID );
 		$data['generator'] = apply_filters( 'wsusearch_schema_generator', 'wsuwp' );
