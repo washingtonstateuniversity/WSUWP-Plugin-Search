@@ -12,7 +12,7 @@ class WSUWP_Search {
 	/**
 	 * @var string The base URL used to add pages from WordPress to our index.
 	 */
-	var $index_api_url = 'https://elastic.wsu.edu';
+	public $index_api_url = 'https://elastic.wsu.edu';
 
 	/**
 	 * Maintain and return the one instance. Initiate hooks when
@@ -60,7 +60,7 @@ class WSUWP_Search {
 			// Private sites must explicitly support search at this time.
 			return false;
 		} else {
-			$index_slug = '/wsu-web';
+			$index_slug = '/' . apply_filters( 'wsuwp_search_index_slug', 'wsu-web' );
 		}
 
 		// Append '-dev' to the index slug when a development environment has been flagged.
@@ -134,7 +134,7 @@ class WSUWP_Search {
 		$data['title'] = $post->post_title;
 		$data['date'] = $post->post_date;
 		$data['modified'] = $post->post_modified;
-		$data['author'] = get_the_author();
+		$data['author'] = get_the_author_meta( 'display_name', $post->post_author );
 		$data['content'] = $post->post_content;
 		$data['url'] = get_permalink( $post->ID );
 		$data['generator'] = apply_filters( 'wsusearch_schema_generator', 'wsuwp' );
@@ -144,7 +144,7 @@ class WSUWP_Search {
 		$data['site_id'] = get_current_blog_id();
 
 		// Store the hostname - e.g. home.wsu.edu - as a field.
-		$home_url = parse_url( trailingslashit( get_home_url() ) );
+		$home_url = wp_parse_url( trailingslashit( get_home_url() ) );
 		$data['hostname'] = $home_url['host'];
 		$data['site_url'] = $home_url['host'];
 
@@ -158,7 +158,9 @@ class WSUWP_Search {
 		}
 
 		// Map each registered public taxonomy to the Elasticsearch document.
-		$taxonomies = get_taxonomies( array( 'public' => true ) );
+		$taxonomies = get_taxonomies( array(
+			'public' => true,
+		) );
 
 		// Don't index post format.
 		if ( isset( $taxonomies['post_format'] ) ) {
@@ -166,7 +168,10 @@ class WSUWP_Search {
 		}
 
 		foreach ( $taxonomies as $taxonomy ) {
-			$post_terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'slugs' ) );
+			$post_terms = wp_get_object_terms( $post->ID, $taxonomy, array(
+				'fields' => 'slugs',
+			) );
+
 			if ( ! is_wp_error( $post_terms ) ) {
 				if ( 'post_tag' === $taxonomy ) {
 					$data['university_tag'] = $post_terms;
@@ -218,7 +223,9 @@ class WSUWP_Search {
 		$request_url = $this->get_index_url() . $this->_sanitize_es_id( $search_id );
 
 		// Make a request to delete the existing document from Elasticsearch.
-		$response = wp_remote_request( $request_url, array( 'method' => 'DELETE' ) );
+		$response = wp_remote_request( $request_url, array(
+			'method' => 'DELETE',
+		) );
 
 		if ( ! is_wp_error( $response ) ) {
 			delete_post_meta( $post_id, '_wsusearch_doc_id' );
