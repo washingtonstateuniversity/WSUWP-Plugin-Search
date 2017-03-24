@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WSU Search
-Version: 0.7.0
+Version: 0.8.0
 Plugin URI: https://web.wsu.edu
 Description: Connects to WSU's Elasticsearch instance.
 Author: washingtonstateuniversity, jeremyfelt
