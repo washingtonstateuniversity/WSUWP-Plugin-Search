@@ -6,9 +6,18 @@ Provides a connection to [WSU Search](https://github.com/washingtonstateuniversi
 
 * By default, posts and pages of public sites are indexed to the `wsu-web` index with a type of `page`.
 * Restricted sites must also have the `index_private_site` option set to `1` to index content.
-* If `wsuwp_search_development` is filtered to `true`, `-dev` will be appended to index URLs.
 
-## Document Structure
+## Elasticsearch configuration
+
+The default Elasticsearch server URL is `https://elastic.wsu.edu` and can be adjusted with the `wsuwp_search_elastic_url` filter.
+
+The default index is `wsu-web` and can be adjusted with the `wsuwp_search_index_slug` filter.
+
+If the `wsuwp_search_development` filter returns `true`, then `-dev` is appended to the index.
+
+Records are stored in Elasticsearch with a type of `page`.
+
+### Document Structure
 
 The current document structure for pages saved by the WSU Search plugin is:
 

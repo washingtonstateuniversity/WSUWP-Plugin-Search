@@ -13,7 +13,7 @@ add_action( 'before_delete_post', 'WSU\Search\remove_post_from_index', 10, 1 );
  * @return string URL to the ES index.
  */
 function get_index_url() {
-	$index_api_url = 'https://elastic.wsu.edu';
+	$index_api_url = apply_filters( 'wsuwp_search_elastic_url', 'https://elastic.wsu.edu' );
 
 	$public_status = absint( get_option( 'blog_public', 0 ) );
 	$index_status = absint( get_option( 'index_private_site', 0 ) );
