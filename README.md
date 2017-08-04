@@ -32,3 +32,7 @@ The current document structure for pages saved by the WSU Search plugin is:
 	}
 }
 ```
+
+## Post Type Support
+
+Posts and pages are supported by default. Use the `wsuwp_search_post_types` filter to manage the list of post types that should be indexed in Elasticsearch. Use `WSU\Search\get_post_types()` to retrieve a list of post types that support WSUWP Search.

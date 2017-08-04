@@ -69,7 +69,7 @@ function save_post( $post_id, $post ) {
  * @return void
  */
 function update_indexed_post( $post_id, $post ) {
-	if ( ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
+	if ( ! in_array( $post->post_type, get_post_types(), true ) ) {
 		return null;
 	}
 
@@ -197,6 +197,22 @@ function remove_post_from_index( $post_id ) {
 	if ( ! is_wp_error( $response ) ) {
 		delete_post_meta( $post_id, '_wsusearch_doc_id' );
 	}
+}
+
+/**
+ * Return a list of post types that should be processed by this plugin.
+ *
+ * @since 0.9.0
+ *
+ * @return array
+ */
+function get_post_types() {
+	$post_types = apply_filters( 'wsuwp_search_post_types', array(
+		'post',
+		'page',
+	) );
+
+	return $post_types;
 }
 
 /**
