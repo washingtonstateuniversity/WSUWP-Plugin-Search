@@ -154,6 +154,8 @@ function update_indexed_post( $post_id, $post ) {
 		}
 	}
 
+	$data = apply_filters( 'wsuwp_search_post_data', $data, $post );
+
 	$args['body'] = wp_json_encode( $data );
 
 	// wp_remote_retrieve_body handles a possible WP_Error from wp_remote_post.
