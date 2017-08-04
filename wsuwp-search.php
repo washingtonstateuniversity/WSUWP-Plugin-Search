@@ -13,19 +13,15 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-// The core plugin class.
-require dirname( __FILE__ ) . '/includes/class-wsu-search.php';
+// This plugin uses namespaces and requires PHP 5.3 or greater.
+if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+	add_action( 'admin_notices', create_function( '',
+	"echo '<div class=\"error\"><p>" . __( 'WSUWP Search requires PHP 5.3 to function properly. Please upgrade PHP or deactivate the plugin.', 'wsuwp-search' ) . "</p></div>';" ) );
+	return;
+} else {
+	include_once __DIR__ . '/includes/wsu-search.php';
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	require_once( dirname( __FILE__ ) . '/includes/class-wp-cli-wsu-search-command.php' );
-}
-
-add_action( 'after_setup_theme', 'WSUWP_Search' );
-/**
- * Start things up.
- *
- * @return \WSUWP_Search
- */
-function WSUWP_Search() {
-	return WSUWP_Search::get_instance();
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		require_once( dirname( __FILE__ ) . '/includes/class-wsu-search-wp-cli-wsues.php' );
+	}
 }
