@@ -13,7 +13,7 @@ add_action( 'before_delete_post', 'WSU\Search\remove_post_from_index', 10, 1 );
  * @return string URL to the ES index.
  */
 function get_index_url() {
-	$index_api_url = 'https://elastic.wsu.edu';
+	$index_api_url = apply_filters( 'wsuwp_search_elastic_url', 'https://elastic.wsu.edu' );
 
 	$public_status = absint( get_option( 'blog_public', 0 ) );
 	$index_status = absint( get_option( 'index_private_site', 0 ) );
@@ -69,7 +69,7 @@ function save_post( $post_id, $post ) {
  * @return void
  */
 function update_indexed_post( $post_id, $post ) {
-	if ( ! in_array( $post->post_type, array( 'post', 'page' ), true ) ) {
+	if ( ! in_array( $post->post_type, get_post_types(), true ) ) {
 		return null;
 	}
 
@@ -154,6 +154,8 @@ function update_indexed_post( $post_id, $post ) {
 		}
 	}
 
+	$data = apply_filters( 'wsuwp_search_post_data', $data, $post );
+
 	$args['body'] = wp_json_encode( $data );
 
 	// wp_remote_retrieve_body handles a possible WP_Error from wp_remote_post.
@@ -197,6 +199,22 @@ function remove_post_from_index( $post_id ) {
 	if ( ! is_wp_error( $response ) ) {
 		delete_post_meta( $post_id, '_wsusearch_doc_id' );
 	}
+}
+
+/**
+ * Return a list of post types that should be processed by this plugin.
+ *
+ * @since 0.9.0
+ *
+ * @return array
+ */
+function get_post_types() {
+	$post_types = apply_filters( 'wsuwp_search_post_types', array(
+		'post',
+		'page',
+	) );
+
+	return $post_types;
 }
 
 /**

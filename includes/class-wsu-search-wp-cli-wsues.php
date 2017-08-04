@@ -24,7 +24,10 @@ class WSUES extends \WP_CLI_Command {
 		list( $type ) = $args;
 
 		if ( 'all' === $type ) {
-			$response = \WP_CLI::launch_self( 'post list --post_type=page,post', array(), array(
+			$post_types = \WSU\Search\get_post_types();
+			$post_types = implode( ',', $post_types );
+
+			$response = \WP_CLI::launch_self( 'post list --post_type=' . $post_types, array(), array(
 				'format' => 'json',
 			), false, true );
 
