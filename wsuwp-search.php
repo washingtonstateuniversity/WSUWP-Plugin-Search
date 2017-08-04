@@ -22,6 +22,6 @@ if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 	include_once __DIR__ . '/includes/wsu-search.php';
 
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
-		require_once( dirname( __FILE__ ) . '/includes/class-wp-cli-wsu-search-command.php' );
+		require_once( dirname( __FILE__ ) . '/includes/class-wsu-search-wp-cli-wsues.php' );
 	}
 }
